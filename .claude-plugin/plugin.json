@@ -1,0 +1,17 @@
+{
+  "name": "fullmakt",
+  "displayName": "Fullmakt",
+  "description": "Governed API access for agents: run your saved API requests from chat through the Fullmakt credential broker. Credentials stay in the Fullmakt vault; every call is policied and audited.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Fullmakt",
+    "url": "https://fullmakt.ai"
+  },
+  "homepage": "https://fullmakt.ai/docs/agents#connector",
+  "repository": "https://github.com/virginprogrammer/fullmakt-plugin",
+  "license": "Apache-2.0",
+  "keywords": ["api", "credentials", "mcp", "security", "automation", "developer-tools"],
+  "skills": ["./skills/"],
+  "commands": ["./commands/"],
+  "mcpServers": "./.mcp.json"
+}

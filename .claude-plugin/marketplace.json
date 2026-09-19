@@ -1,0 +1,25 @@
+{
+  "name": "fullmakt",
+  "description": "Fullmakt, the credential broker for AI agents: governed, audited API access from Claude.",
+  "owner": {
+    "name": "Fullmakt",
+    "url": "https://fullmakt.ai"
+  },
+  "plugins": [
+    {
+      "name": "fullmakt",
+      "source": "./",
+      "description": "Run your saved API requests from chat through the Fullmakt credential broker. Credentials never enter the conversation.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Fullmakt",
+        "url": "https://fullmakt.ai"
+      },
+      "homepage": "https://fullmakt.ai/docs/agents#connector",
+      "repository": "https://github.com/virginprogrammer/fullmakt-plugin",
+      "license": "Apache-2.0",
+      "category": "developer-tools",
+      "keywords": ["api", "credentials", "mcp", "security", "automation"]
+    }
+  ]
+}

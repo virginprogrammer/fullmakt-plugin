@@ -1,0 +1,52 @@
+name: Validate plugin
+
+# Runs in the public mirror on every push and weekly: the manifests must
+# validate strictly, the listed MCP URL must be the one the live server
+# reports, and every link in the Markdown must resolve.
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "30 4 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+
+      - name: Manifests, skills and commands validate strictly
+        run: |
+          npm install -g @anthropic-ai/claude-code@2.1.274
+          claude plugin validate --strict .
+          claude plugin validate --strict .claude-plugin/plugin.json
+          claude plugin validate --strict skills
+          claude plugin validate --strict commands
+
+      - name: Listed MCP URL matches the live server
+        run: |
+          listed=$(jq -r '.mcpServers.fullmakt.url' .mcp.json)
+          actual=$(curl -sS --max-time 10 "${listed%/mcp}/mcp/health" | jq -r .mcpEndpoint)
+          [ "$listed" = "$actual" ] || { echo "::error::.mcp.json lists $listed but the server reports $actual"; exit 1; }
+
+      - name: Links resolve
+        run: |
+          set -euo pipefail
+          status=0
+          for url in $(grep -rhoE 'https?://[^ )>"`]+' --include='*.md' --include='*.json' . | sed 's/[.,;:]*$//' | sort -u); do
+            code=$(curl -sS -o /dev/null -L --max-time 15 -w '%{http_code}' "$url" || echo 000)
+            case "$code" in 2*|3*) ;; *) echo "::error::$url -> $code"; status=1 ;; esac
+          done
+          exit $status
